@@ -12,6 +12,7 @@ import java.util.Objects;
 public class CellFactory implements Callback<TreeView<WLTreeNode>, TreeCell<WLTreeNode>> {
     private static final DataFormat JAVA_FORMAT = new DataFormat("application/x-java-serialized-object");
     private static final String DROP_HINT_STYLE = "-fx-border-color: #eea82f; -fx-border-width: 0 0 2 0; -fx-padding: 3 3 1 3";
+    private static final String DROP_STYLE = "-fx-border-color: #eea82f; -fx-border-width: 2 2 2 2; -fx-padding: 3 3 1 3";
     private TreeCell<WLTreeNode> dropZone;
     private TreeItem<WLTreeNode> draggedItem;
 
@@ -78,19 +79,25 @@ public class CellFactory implements Callback<TreeView<WLTreeNode>, TreeCell<WLTr
             return;
         }
 
+        if(dropZoneIsChild(draggedItem,thisItem)){
+            clearDropLocation();
+            return;
+        }
+
         event.acceptTransferModes(TransferMode.MOVE);
         if (!Objects.equals(dropZone, treeCell)) {
             clearDropLocation();
             this.dropZone = treeCell;
-            dropZone.setStyle(DROP_HINT_STYLE);
+
         }
 
         if (y > (height * .75d)) {
-            System.out.println(y);
             workDropType = WorkDropType.REORDER;
+            dropZone.setStyle(DROP_HINT_STYLE);
         }
         else {
             workDropType = WorkDropType.DROP_INTO;
+            dropZone.setStyle(DROP_STYLE);
         }
     }
     private void drop(DragEvent event, TreeCell<WLTreeNode> treeCell, TreeView<WLTreeNode> treeView) {
@@ -127,4 +134,27 @@ public class CellFactory implements Callback<TreeView<WLTreeNode>, TreeCell<WLTr
     private void clearDropLocation() {
         if (dropZone != null) dropZone.setStyle("");
     }
+
+    //make sure that when we drop the node it is not a child of the node we are dragging
+    private boolean dropZoneIsChild(TreeItem<WLTreeNode>  node, TreeItem<WLTreeNode> destination){
+        boolean isChild = false;
+
+        for(TreeItem<WLTreeNode> child : node.getChildren()){
+
+
+            if(destination.getValue().getId() == child.getValue().getId() ){
+                isChild = true;
+                System.out.println("found problem");
+                System.out.println("dragged node id: " + destination.getValue().getId() + "child id: " + child.getValue().getId()  );
+                return isChild;
+            }
+            if(!child.getChildren().isEmpty()){
+                isChild = dropZoneIsChild(child,destination);
+            }
+
+        }
+
+        return isChild;
+    }
+
 }
