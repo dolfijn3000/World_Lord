@@ -1,9 +1,12 @@
 import ArticleControls.wlAcordion.WLAcordionControl;
+import ArticleControls.wlHTMLeditor.WLHTMLeditor;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+
 
 public class WLTab extends Tab {
 
@@ -43,10 +46,19 @@ public class WLTab extends Tab {
 
         //load dynamic controls
 
-        WLAcordionControl w = new WLAcordionControl();
+        /*WLAcordionControl w = new WLAcordionControl();
         w.controller.Main.setMaxWidth(Double.MAX_VALUE);
         GridPane.setFillWidth(w.controller.Main, true);
-        gridPane.add(w.controller.Main,0,1);
+        gridPane.add(w.controller.Main,0,1);*/
+
+        WLHTMLeditor editor = new WLHTMLeditor();
+        GridPane.setFillWidth(editor, true);
+        gridPane.add(editor,0,1);
+
+        TextArea t = new TextArea();
+
+        //Bind the content of the editor to the article
+        article.contentProperty().bind(editor.htmlProperty());
 
         return gridPane;
     }

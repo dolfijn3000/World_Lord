@@ -9,7 +9,7 @@ import java.util.List;
 
 public class Main extends Application {
 
-    public static List<Article> articles = new ArrayList<Article>();
+
 
     @Override
     public void start(Stage primaryStage) throws Exception{

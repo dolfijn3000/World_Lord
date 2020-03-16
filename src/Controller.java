@@ -4,6 +4,7 @@ import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -65,6 +66,7 @@ public class Controller {
             if(article == null){
 
             }else{
+                //tabPane.getTabs().add(new WLTab(ti.getValue().getName(),article));
                 tabPane.getTabs().add(new WLTab(ti.getValue().getName(),article));
             }
         });
@@ -122,7 +124,7 @@ public class Controller {
     }
 
     public Article FindArticleById(String id){
-        for(Article article : Main.articles){
+        for(Article article : DataContainer.articles){
             if(article.getId() == id){
                 return article;
             }
@@ -130,4 +132,7 @@ public class Controller {
         return null;
     }
 
+    public void DeleteNode() {
+        DataContainer.getArticleContent();
+    }
 }

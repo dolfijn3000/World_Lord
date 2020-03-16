@@ -1,38 +1,41 @@
-package ArticleControls.wlAcordion;
+package ArticleControls.wlHTMLeditor;
 
-import ArticleControls.ArticleControl;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ToolBar;
-import javafx.scene.effect.DropShadow;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.input.InputEvent;
 import javafx.scene.web.HTMLEditor;
 import javafx.scene.web.WebView;
 
 import java.io.File;
 
-public class WLAcordionController extends ArticleControl {
-
-    @FXML
-    public AnchorPane Main;
-
-    @FXML
-    public HTMLEditor htmlEditor;
+public class WLHTMLeditor extends HTMLEditor {
 
     private  WebView mWebView;
+    public StringProperty html;
 
-    public WLAcordionController(){
+    public String getHtml() {
+        return html.get();
     }
 
-    @FXML
-    void initialize(){
+    public StringProperty htmlProperty() {
+        return html;
+    }
+
+    public void setHtml(String html) {
+        this.html.set(html);
+    }
+
+    public WLHTMLeditor(){
+        html = new SimpleStringProperty("html");
         // add a custom button to the top toolbar.
-        Node node = htmlEditor.lookup(".top-toolbar");
+        Node node = this.lookup(".top-toolbar");
         if (node instanceof ToolBar) {
             ToolBar bar = (ToolBar) node;
             Button smurfButton = new Button("IMAGE");
@@ -44,10 +47,19 @@ public class WLAcordionController extends ArticleControl {
                 }
             });
         }
-        mWebView = (WebView) htmlEditor.lookup(".web-view");
+        mWebView = (WebView) this.lookup(".web-view");
+        init();
     }
 
+    public void init() {
+        addEventHandler(InputEvent.ANY, new EventHandler<InputEvent>() {
 
+            @Override
+            public void handle(InputEvent event) {
+                setHtml(getHtmlText());
+            }
+        });
+    }
 
     public void insertHtmlAfterCursor(String html) {
         //replace invalid chars
@@ -89,10 +101,4 @@ public class WLAcordionController extends ArticleControl {
         //execute script
         mWebView.getEngine().executeScript(script);
     }
-
-    @Override
-    public Object GetData() {
-        return null;
-    }
-
 }
